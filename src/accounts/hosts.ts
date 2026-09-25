@@ -152,9 +152,9 @@ export async function hostsRoute(request: Request, env: Env, accountId: string, 
   } else {
     // 在同一 SQL 语句里检查配额，避免并发新增绕过限制，也限制列表解密的 CPU 开销。
     const result = await env.DB.prepare(`INSERT INTO hosts(id, account_id, encrypted_payload, updated_at)
-      SELECT ?, ?, ?, ? WHERE (SELECT COUNT(*) FROM hosts WHERE account_id = ?) < 200`)
+      SELECT ?, ?, ?, ? WHERE (SELECT COUNT(*) FROM hosts WHERE account_id = ?) < 500`)
       .bind(hostId, accountId, encrypted, now, accountId).run();
-    if (!result.meta.changes) throw new APIError('第一版每个账户最多保存 200 台主机。', 409);
+    if (!result.meta.changes) throw new APIError('第一版每个账户最多保存 500 台主机。', 409);
   }
   return json({ host: metadata(hostId, payload, now) }, id ? 200 : 201);
 }
