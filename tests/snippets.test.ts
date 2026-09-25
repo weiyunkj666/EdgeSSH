@@ -54,9 +54,13 @@ test('校验保留多行脚本语义，拒绝空白、超长与终端控制字�
   assert.deepEqual(validateSnippet({ name: ' 多行 ', command: 'echo a\r\necho b\r' }), { name: '多行', command: 'echo a\necho b\n' });
   for (const body of [
     { name: '', command: 'pwd' }, { name: ' ', command: 'pwd' }, { name: 'a'.repeat(81), command: 'pwd' },
-    { name: '测试', command: '' }, { name: '测试', command: ' '.repeat(10) }, { name: '测试', command: 'a'.repeat(8193) },
+    { name: '测试', command: '' }, { name: '测试', command: ' '.repeat(10) }, { name: '测试', command: 'a'.repeat(262145) },
     { name: '测试', command: '\x1b[201~pwd' }, { name: '测试', command: '\x03pwd' }, { name: 1, command: 'pwd' },
   ]) assert.throws(() => validateSnippet(body), /片段名称|命令/);
+  // 长脚本必须被接受：Termius 导出的片段里有单条 9 万字符的多行脚本，这是把上限从
+  // 8192 提到 262144 的原因。用多行而不是单行，是因为终端一次粘贴本身就是多行的。
+  const longScript = Array.from({ length: 3000 }, (_, index) => "echo 行-" + index).join("\n");
+  assert.equal(validateSnippet({ name: "长脚本", command: longScript }).command, longScript);
 });
 
 test('并发首次读取只生成十条；删空和重复读取不补回', async (context) => {
