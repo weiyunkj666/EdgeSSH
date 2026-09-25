@@ -13,7 +13,7 @@ export class SnippetEditor {
     this.dialog.innerHTML = `<form autocomplete="off">
       <header><span class="snippet-symbol" aria-hidden="true">{ }</span><h2 id="snippet-editor-title">新建代码片段</h2></header>
       <label>名称<input name="name" maxlength="80" required placeholder="例如：查看磁盘空间"></label>
-      <label>命令<textarea name="command" rows="7" maxlength="8192" required spellcheck="false" placeholder="df -h"></textarea></label>
+      <label>命令<textarea name="command" rows="7" maxlength="262144" required spellcheck="false" placeholder="df -h"></textarea></label>
       <p class="snippet-hint">支持多行命令。使用时先填入命令编辑器，确认后再发送。</p>
       <p class="snippet-editor-error" role="alert" hidden></p>
       <footer><button type="button" data-cancel>取消</button><button type="submit" class="snippet-primary">保存片段</button></footer>

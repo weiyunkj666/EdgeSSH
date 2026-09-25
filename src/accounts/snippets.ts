@@ -9,9 +9,9 @@ export function validateSnippet(body: Record<string, unknown>): SnippetInput {
   if (typeof body.name !== 'string' || !body.name.trim() || body.name.length > 80) {
     throw new APIError('片段名称不能为空，且不能超过 80 个字符。');
   }
-  if (typeof body.command !== 'string' || !body.command.trim() || body.command.length > 8192
+  if (typeof body.command !== 'string' || !body.command.trim() || body.command.length > 262144
     || /[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/.test(body.command)) {
-    throw new APIError('命令不能为空、超过 8192 个字符或包含终端控制字符。');
+    throw new APIError('命令不能为空、超过 262144 个字符或包含终端控制字符。');
   }
   return { name: body.name.trim(), command: body.command.replace(/\r\n?/g, '\n') };
 }
